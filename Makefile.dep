@@ -1,0 +1,23 @@
+boot.o: boot.S multiboot.h x86_desc.h types.h
+linkage.o: linkage.S kb.h types.h lib.h rtc.h pit.h linkage.h syscalls.h \
+  file_system.h paging.h x86_desc.h
+x86_desc.o: x86_desc.S x86_desc.h types.h
+file_system.o: file_system.c file_system.h types.h lib.h syscalls.h kb.h \
+  rtc.h linkage.h paging.h
+i8259.o: i8259.c i8259.h types.h lib.h
+idt_init.o: idt_init.c idt_init.h x86_desc.h types.h rtc.h lib.h pit.h \
+  i8259.h kb.h linkage.h syscalls.h file_system.h paging.h
+kb.o: kb.c kb.h types.h lib.h x86_desc.h i8259.h pit.h paging.h
+kernel.o: kernel.c multiboot.h types.h x86_desc.h lib.h i8259.h debug.h \
+  tests.h rtc.h pit.h kb.h paging.h file_system.h syscalls.h linkage.h
+lib.o: lib.c lib.h types.h kb.h syscalls.h file_system.h rtc.h linkage.h \
+  paging.h x86_desc.h i8259.h pit.h
+paging.o: paging.c types.h lib.h x86_desc.h paging.h file_system.h
+pit.o: pit.c lib.h types.h pit.h i8259.h syscalls.h kb.h file_system.h \
+  rtc.h linkage.h paging.h x86_desc.h
+rtc.o: rtc.c lib.h types.h rtc.h i8259.h syscalls.h kb.h file_system.h \
+  linkage.h paging.h pit.h
+syscalls.o: syscalls.c syscalls.h types.h kb.h lib.h file_system.h rtc.h \
+  linkage.h paging.h x86_desc.h pit.h
+tests.o: tests.c tests.h x86_desc.h types.h lib.h paging.h kb.h \
+  file_system.h rtc.h syscalls.h linkage.h

@@ -1,0 +1,59 @@
+﻿MP3 Group 5: Darren Anco, Oliver Chen, Teja Gupta, Aditya Gupta
+Checkpoint 1:
+-> Error in paging: grub was rebooting indefinitely. Fixed it by changing cr4 to have the PSE (page size enable) enabled and adding a  page directory entry for the kernel address.(2 hrs)
+
+-> Error in PIC_init: RTC interrupts weren’t running even though enable had been called on the correct IR pins. In i8259.c, the masks weren’t being set properly. We were using logical NOT instead of bitwise NOT, which caused the masks to not be set properly. (30 min)
+
+-> Error in send_eoi: The PIC wasn’t ending the interrupt correctly, causing the PIC to fail in sending consecutive interrupts. In send_eoi, we needed to OR EOI with irq_num instead of just EOI since the PIC is in specific EOI mode. (1 hr)
+
+-> Error in linkage.S: Page faults occurred after typing in multiple characters. We needed to do assembly linkage for keyboard interrupt handler. Without the linkage, registers containing addresses were clobbered and accessed unallocated memory. (5 hrs)
+
+-> Error in init_idt: When exceptions were called, the while(1) loop wasn’t running. Interrupts could still be typed to the screen even though the while loop should have been running. Included cli to mask interrupts, which stopped allowed the while(1) loop to run continuously.(1 hrs)
+
+Checkpoint 2:
+Terminal driver:
+-> Error in mapping characters with different cases of caps and shift. Fixed by carefully listing out test cases and putting them into the handler (2hrs).
+
+-> text-mode cursor not placing correctly. Fixed by recalculating scrren_x, screen_y and rechecking some vga ports (30 min).
+
+-> Not going all the way to the end on the line only printing 79 characters. This turned out to be an off by one error and a misunderstanding of how putc worked (2-3 hours).
+
+
+-> Buffer was taking more than 128 characters. This was another off by one error (15 min).
+
+-> Global variables not changing. Had to change to be static in order to get this to work also moved the terminal driver into keyboard. This error happened multiple times (2-3 hours).
+
+File system:
+-> Reading wrong data blocks when trying to read file data. Turned out to be an issue with pointer arithmetic, we were offsetting the starting data block address by four times more than needed. (1 hour)
+
+-> Directory read displays unreadable characters. Needed to null terminate the string properly by strncpy all 32 characters from the file name. (1-2 hours)
+
+Checkpoint 3:
+-> testprint works in shell but returns abnormally. Didn’t return the proper status that was passed to halt. (Took 10 minutes)
+
+-> Page fault when trying to run a command in shell. The parent esp in the child process’ pcb turned out to be calculated incorrectly and paging was being mapped to the wrong place. (Took 1.5 hour)
+
+-> Page fault when trying to launch the shell. We were passing in the physical address of the eip instead of the virtual address for the shell. (Took 1 hour)
+
+-> Open crashes when NULL point is passed. We did not place checks for null pointers. This error took approximately 1 minute to fix. (1 min)
+
+-> Crashes when tries to close all files in halt. This turned out to be an issue with how we were detecting if files were open. We changed how we were detecting if a file was open or not. (This error took roughly 30 minutes to fix).
+
+-> Clear-L would not print 391OS. We had to create another helper function to use instead of our current implementation of clear(). (30 minutes)
+
+-> close would try to close stdin and stdout. Changed the if statement to prevent this from being written to. (1 minutes)
+
+Checkpoint 4:
+
+->Grep was reading fish executable incorrectly(finding |/\_ in fish when it shouldn’t). We had an issue with our read_data implementation so that when we were reading the fish executable, we accidentally read the wrong data block(of frame0.txt) as well. (45 minutes)
+
+Checkpoint 5:
+-> Switch process was page faulting. Was an issue with illegal memory access, fixed by stopping modification of the stack (12 hours)
+
+-> RTC was not virtualized. Fixed this by setting the initialized freq to a high value and then setting the rate by MAX_FREQ/(freq of the program) (6 hours)
+
+-> Video was not getting mapped correctly. Fixed this by remapping video paging to the correct buffer. (6 hours)
+
+-> Wrong shell was being exited. This turned out to be an error with how the parent pid was being calculated. (roughly a day)
+
+-> switch_process not being called. This was due to an error with how the scheduling structures were being initialized. (5 hours)
